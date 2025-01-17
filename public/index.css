@@ -1,0 +1,70 @@
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0px;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+#map {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.election-selector {
+  background-color: white;
+}
+
+.election-selector.closed {
+  background-image: url(leaflet/images/layers.png);
+	width: 36px;
+	height: 36px;
+  background-position: 50% 50%;
+	background-repeat: no-repeat;
+}
+
+.election-selector.closed .election-selector-drawer{
+  display: none;
+}
+
+.election-selector-select {
+  width: 100%;
+  padding: 12px 20px;
+  display: block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.election-selector div{
+  width: 100%;
+  display: block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.election-selector-credits a {
+  display: inline;
+  text-decoration: underline;
+}
+
+.election-selector-slider{
+  width: 90%;
+  margin: 3px 5%;
+}
+
+p.popup-title{
+  margin: 5px 0;
+  font-weight: bold;
+  text-align: center;
+}
+
+P.popup-subtitle{
+  margin: 0;
+  font-weight: bold;
+  text-align: center;
+}
