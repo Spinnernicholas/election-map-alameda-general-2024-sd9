@@ -1,6 +1,6 @@
 const pageTitle = 'Contra Costa County 2024 Presidential Election Results';
-const precinctIDField = 'PrecinctID';
-const precinctLabelField = 'PrecinctID';
+const precinctIDField = 'Precinct_ID';
+const precinctLabelField = 'Precinct_ID';
 const grouped = false;
 const additionalGISData = false;
 
