@@ -53,7 +53,7 @@ L.Control.ElectionSelector = L.Control.extend({
             },
             mouseleave: function (e) {
                 if(e.relatedTarget === null || container.contains(e.relatedTarget)) e.stopPropagation();
-                else this._close();
+                else if(!window.tourActive) this._close();
             }
         }, this);
 
@@ -69,11 +69,7 @@ L.Control.ElectionSelector = L.Control.extend({
     _addTitle: function(){
         let div = L.DomUtil.create('div', 'election-selector-credits', this._drawer);
 
-        div.innerHTML = `
-        <p>
-            <b>${this._title}</b><br/>
-            Created by <a href="https://github.com/Spinnernicholas" target="_blank">Nick Spinner</a> - <a href="https://github.com/Cocoa-County/CocoaCountyMap">Source Code</a>
-        </p>`;
+        div.innerHTML = `<p><b>${this._title}</b></p>`;
     },
 
     _addControls: function(){
@@ -181,6 +177,7 @@ L.Control.ElectionSelector = L.Control.extend({
     styleHidden: {fillColor: 'lightgray'},
 
     _close: function(){
+        if(window.tourActive) return;
         this._container.classList.add("closed");
         this._closed = true;
     },
