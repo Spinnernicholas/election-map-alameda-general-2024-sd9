@@ -23,6 +23,7 @@ This file format aims to organize and store election data in a structured and ea
 | ├─ id               | Unique identifier for the choice | Integer              |
 | ├─ label            | Label/name of the choice         | String               |
 | ├─ party (optional) | Political party of the choice    | String               |
+| ├─ color (optional) | Hex/RGB color for the choice     | String               |
 | └─ votes            | Total votes for the choice       | Integer              |
 | **Precinct Object** |                                  |                      |
 | ├─ label            | Label/name of the precinct       | String               |
@@ -48,6 +49,7 @@ This file format aims to organize and store election data in a structured and ea
           "id": 100,                  // Unique identifier for the choice
           "label": "John Doe",        // Label/name of the choice
           "party": "Democrat",        // Optional: Political party of the choice
+          "color": "#1f78b4",         // Optional: Custom color for the choice
           "votes": 1500               // Total votes for the choice
         },
         {

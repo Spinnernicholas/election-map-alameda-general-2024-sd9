@@ -11430,14 +11430,16 @@
           "id": 0,
           "label": "TIM GRAYSON",
           "party": "DEM",
-          "votes": 161412
+          "votes": 161412,
+          "color": "#e31a1c"
         },
         {
           "index": 1,
           "id": 1,
           "label": "MARISOL RUBIO",
           "party": "DEM",
-          "votes": 141749
+          "votes": 141749,
+          "color": "#1f78b4"
         }
       ],
       "precincts": {

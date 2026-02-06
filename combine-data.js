@@ -181,6 +181,30 @@ function setContestLabel(contest, label) {
   return cloned;
 }
 
+function setChoiceColors(contest, colorMap) {
+  if (!contest || !Array.isArray(contest.choices) || !colorMap) {
+    return contest;
+  }
+
+  const cloned = JSON.parse(JSON.stringify(contest));
+
+  cloned.choices = cloned.choices.map((choice) => {
+    const label = (choice.label || '').toLowerCase();
+
+    if (label.includes('marisol')) {
+      return { ...choice, color: colorMap.marisol };
+    }
+
+    if (label.includes('tim')) {
+      return { ...choice, color: colorMap.tim };
+    }
+
+    return choice;
+  });
+
+  return cloned;
+}
+
 // Read both data files
 const alamedaData = readJsonFile(path.join(dataDir, 'alemeda-data.json'));
 const contraCostaData = readJsonFile(path.join(dataDir, 'contracosta-data.json'));
@@ -193,7 +217,14 @@ const alamedaSd9Contests = collectSd9Contests(alamedaData, alamedaPrefix).map((c
 );
 
 const contraCostaSd9Contests = collectSd9Contests(contraCostaData, contraCostaPrefix).map(
-  (contest) => setContestLabel(contest, 'State Senate District 9 (Contra Costa)')
+  (contest) =>
+    setChoiceColors(
+      setContestLabel(contest, 'State Senate District 9 (Contra Costa)'),
+      {
+        marisol: '#1f78b4',
+        tim: '#e31a1c'
+      }
+    )
 );
 
 const combinedSd9Contests = [

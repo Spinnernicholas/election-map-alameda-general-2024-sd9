@@ -143,7 +143,10 @@ L.Control.ElectionSelector = L.Control.extend({
             if(!precinct) return this.styleBlank;
             if(precinct.total == 0) return this._buildStyle({fillColor: 'white'});
             if(!precinct.results) return this._buildStyle(this.styleHidden);
-            return this._buildStyle({fillColor: this._colorClassifier[precinct.winner]});
+            let winnerColor = this._getChoiceColor(this._contests[selection.contest], precinct.winner);
+            return this._buildStyle({
+                fillColor: winnerColor || this._colorClassifier[precinct.winner]
+            });
         };
         if(selection.choice === "t") return feature => {
             let precinct = this._contests[selection.contest].precincts[feature.properties[this._precinctIDField]];
@@ -156,8 +159,17 @@ L.Control.ElectionSelector = L.Control.extend({
             if(!precinct) return this.styleBlank;
             if(precinct.total == 0) return this._buildStyle({fillColor: 'white'});
             if(!precinct.results) return this._buildStyle(this.styleHidden);
-            return this._buildStyle({fillColor: this._colorScale(precinct.percentage[selection.choice])});
+            let choiceColor = this._getChoiceColor(this._contests[selection.contest], selection.choice);
+            let colorScale = choiceColor ? chroma.scale(['white', choiceColor]) : this._colorScale;
+            return this._buildStyle({fillColor: colorScale(precinct.percentage[selection.choice])});
         };
+    },
+
+    _getChoiceColor: function(contest, index) {
+        if(!contest || !contest.choices || contest.choices.length === 0) return null;
+        let choice = contest.choices[index];
+        if(!choice || !choice.color) return null;
+        return choice.color;
     },
 
     _buildStyle: function(style){
