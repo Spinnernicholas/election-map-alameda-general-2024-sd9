@@ -3,7 +3,7 @@ This is an interactive election map with the goal of providing a template that c
 
 Try it out [Here](https://spinnernicholas.github.io/election-map-alameda-general-2024-sd9/public/)
 
-If you would like more informatino or a demo, please reach out to me on [Twitter](https://twitter.com/NicholasSpinner) or [LinkedIn](https://www.linkedin.com/in/spinnernicholas/).
+If you would like more informatino or a demo, please reach out to me on [LinkedIn](https://www.linkedin.com/in/spinnernicholas/).
 
 # Features
 - Interactive precinct-level election results visualization
