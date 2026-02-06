@@ -110,13 +110,12 @@ function showTourStep(stepIndex) {
             tourSpotlight.style.height = `${rect.height + 10}px`;
             tourSpotlight.style.display = 'block';
             
-            // Position tour content
-            if (step.position === 'right') {
-                tourContent.style.left = `${rect.right + 20}px`;
-                tourContent.style.top = `${rect.top}px`;
-                tourContent.style.right = 'auto';
-                tourContent.style.bottom = 'auto';
-            }
+            // Always center the tour content
+            tourContent.style.left = '50%';
+            tourContent.style.top = '50%';
+            tourContent.style.transform = 'translate(-50%, -50%)';
+            tourContent.style.right = 'auto';
+            tourContent.style.bottom = 'auto';
         }
     } else {
         tourSpotlight.style.display = 'none';
