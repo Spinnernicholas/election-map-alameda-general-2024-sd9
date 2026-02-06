@@ -4,6 +4,16 @@ const precinctLabelField = 'Precinct_ID';
 const grouped = false;
 const additionalGISData = false;
 
+// Intro overlay handler
+const introOverlay = document.getElementById('intro-overlay');
+const closeIntroBtn = document.getElementById('close-intro');
+
+if (closeIntroBtn) {
+    closeIntroBtn.addEventListener('click', () => {
+        introOverlay.classList.add('hidden');
+    });
+}
+
 const map = L.map('map', {preferCanvas: false});
 
 let osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -58,37 +68,44 @@ let data, precinctsLayer;
 
                     if(!precinct) content += `No Election Results`;
                     else {
-                        if(precinct.registeredVoters == 0 && precinct.total == 0) content += "No Registered Voters<br/>";
+                        if(precinct.registeredVoters == 0 && (precinct.total === undefined || precinct.total == 0)) content += "No Registered Voters<br/>";
                         else {
-                            if(precinct.total == 0) content += "No Votes<br/";
-                            else if(selector.selection.choice === 't') content += `
-                                Total Votes: ${precinct.total}<br/>
-                                `;
-                            else if(!precinct.results) content += `
-                                Hidden for Privacy<br/>
-                                Total Votes: ${precinct.total}<br/>
-                                `;
-                            else if(selector.selection.choice === 'w') content += `
+                            if(precinct.total === undefined) {
+                                content += "No Contest Results<br/>";
+                            } else if(precinct.total == 0) {
+                                content += "No Votes<br/>";
+                            } else if(selector.selection.choice === 't') {
+                                content += `Total Votes: ${precinct.total}<br/>`;
+                            } else if(!precinct.results) {
+                                content += `Hidden for Privacy<br/>Total Votes: ${precinct.total}<br/>`;
+                            } else if(selector.selection.choice === 'w') {
+                                content += `
                                 <p class="popup-subtitle">${contest.choices[precinct.winner].label}</p>
-                                Votes: ${precinct.results ? precinct.results[precinct.winner] : 0}/${precinct.total} (${precinct.percentage ? (100 * precinct.percentage[precinct.winner]).toFixed(0) : 0}%)<br/>
+                                Votes: ${precinct.results[precinct.winner]}/${precinct.total} (${precinct.percentage ? (100 * precinct.percentage[precinct.winner]).toFixed(0) : 0}%)<br/>
                                 `;
-                            else content += `
+                            } else {
+                                content += `
                                 <p class="popup-subtitle">${choice.label}</p>
-                                Votes: ${precinct.results ? precinct.results[selector.selection.choice] : 0}/${precinct.total} (${precinct.percentage ? (100 * precinct.percentage[precinct.winner]).toFixed(0) : 0}%)<br/>
+                                Votes: ${precinct.results[selector.selection.choice]}/${precinct.total} (${precinct.percentage ? (100 * precinct.percentage[selector.selection.choice]).toFixed(0) : 0}%)<br/>
                                 `;
+                            }
 
-                            content += `Registered Voters: ${precinct.registeredVoters}<br/>`;
+                            content += `Registered Voters: ${precinct.registeredVoters || 0}<br/>`;
 
-                            if(precinct.total == precinct.totalVoters) {
+                            if(precinct.total !== undefined && precinct.total == precinct.totalVoters && precinct.registeredVoters > 0) {
                                 content += `Turnout: ${(100 * precinct.total / precinct.registeredVoters).toFixed(0)}%<br/>`;
                             } else {
-                                if(contest.voteFor > 1) {
-                                    content += `Contest Type: Vote For ${contest.voteFor}<br/>`
-                                    content += `Contest Turnout: ${precinct.total}/${precinct.registeredVoters * contest.voteFor} (${(100 * precinct.total / precinct.registeredVoters / contest.voteFor).toFixed(0)}%)<br/>`;
-                                } else {
-                                    content += `Contest Turnout: (${(100 * precinct.total / precinct.registeredVoters).toFixed(0)}%)<br/>`;
+                                if(precinct.total !== undefined && precinct.registeredVoters > 0) {
+                                    if(contest.voteFor > 1) {
+                                        content += `Contest Type: Vote For ${contest.voteFor}<br/>`;
+                                        content += `Contest Turnout: ${precinct.total}/${precinct.registeredVoters * contest.voteFor} (${(100 * precinct.total / precinct.registeredVoters / contest.voteFor).toFixed(0)}%)<br/>`;
+                                    } else {
+                                        content += `Contest Turnout: ${precinct.total}/${precinct.registeredVoters} (${(100 * precinct.total / precinct.registeredVoters).toFixed(0)}%)<br/>`;
+                                    }
                                 }
-                                content += `Ballot Turnout: ${precinct.totalVoters}/${precinct.registeredVoters} (${(100 * precinct.totalVoters / precinct.registeredVoters).toFixed(0)}%)<br/>`;
+                                if(precinct.totalVoters !== undefined && precinct.registeredVoters > 0) {
+                                    content += `Ballot Turnout: ${precinct.totalVoters}/${precinct.registeredVoters} (${(100 * precinct.totalVoters / precinct.registeredVoters).toFixed(0)}%)<br/>`;
+                                }
                             }
                         }
                     }
