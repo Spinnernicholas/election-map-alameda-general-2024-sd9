@@ -46,13 +46,89 @@ function prefixContestPrecincts(contest, prefix) {
   return cloned;
 }
 
-function collectSd9Contests(data, prefix) {
+function normalizeSd9Choices(contest) {
+  if (!contest || !Array.isArray(contest.choices) || contest.choices.length !== 2) {
+    return contest;
+  }
+
+  const cloned = JSON.parse(JSON.stringify(contest));
+  const [first, second] = cloned.choices;
+
+  const hasMarisolFirst = /marisol/i.test(first.label || '');
+  const hasTimSecond = /tim/i.test(second.label || '');
+
+  if (hasMarisolFirst && hasTimSecond) {
+    return cloned;
+  }
+
+  const marisolChoice = cloned.choices.find((choice) => /marisol/i.test(choice.label || ''));
+  const timChoice = cloned.choices.find((choice) => /tim/i.test(choice.label || ''));
+
+  if (!marisolChoice || !timChoice) {
+    return cloned;
+  }
+
+  cloned.choices = [marisolChoice, timChoice].map((choice, index) => ({
+    ...choice,
+    index
+  }));
+
+  return cloned;
+}
+
+function flipTwoChoicePrecinctResults(contest) {
+  if (!contest || !contest.precincts) {
+    return contest;
+  }
+
+  const cloned = JSON.parse(JSON.stringify(contest));
+  const updatedPrecincts = {};
+
+  for (const [precinctId, precinctData] of Object.entries(cloned.precincts)) {
+    const nextData = { ...precinctData };
+
+    if (Array.isArray(nextData.results) && nextData.results.length === 2) {
+      nextData.results = [nextData.results[1], nextData.results[0]];
+    }
+
+    if (Array.isArray(nextData.percentage) && nextData.percentage.length === 2) {
+      nextData.percentage = [nextData.percentage[1], nextData.percentage[0]];
+    }
+
+    if (nextData.winner === 0) {
+      nextData.winner = 1;
+    } else if (nextData.winner === 1) {
+      nextData.winner = 0;
+    }
+
+    updatedPrecincts[precinctId] = nextData;
+  }
+
+  cloned.precincts = updatedPrecincts;
+
+  return cloned;
+}
+
+function collectSd9Contests(data, prefix, options = {}) {
   const contests = data && data.contests ? data.contests : [];
   const sd9Pattern = /senate\s+district\s+9/i;
+  const { normalizeChoices = false, flipPrecinctResults = false } = options;
 
   return contests
     .filter((contest) => sd9Pattern.test(contest.label || ''))
-    .map((contest) => prefixContestPrecincts(contest, prefix));
+    .map((contest) => {
+      let nextContest = contest;
+
+      if (normalizeChoices) {
+        nextContest = normalizeSd9Choices(nextContest);
+      }
+
+      if (flipPrecinctResults) {
+        nextContest = flipTwoChoicePrecinctResults(nextContest);
+      }
+
+      return prefixContestPrecincts(nextContest, prefix);
+    });
 }
 
 function mergeSd9Contests(contests) {
@@ -101,8 +177,11 @@ const alamedaPrefix = 'alameda';
 const contraCostaPrefix = 'contracosta';
 
 const sd9Contests = [
-  ...collectSd9Contests(alamedaData, alamedaPrefix),
-  ...collectSd9Contests(contraCostaData, contraCostaPrefix)
+  ...collectSd9Contests(alamedaData, alamedaPrefix, { normalizeChoices: true }),
+  ...collectSd9Contests(contraCostaData, contraCostaPrefix, {
+    normalizeChoices: true,
+    flipPrecinctResults: true
+  })
 ];
 
 const mergedSd9Contest = mergeSd9Contests(sd9Contests);
