@@ -110,20 +110,36 @@ function showTourStep(stepIndex) {
             tourSpotlight.style.height = `${rect.height + 10}px`;
             tourSpotlight.style.display = 'block';
             
-            // Always center the tour content
+            // Position tour content based on step
             tourContent.style.left = '50%';
-            tourContent.style.top = '50%';
-            tourContent.style.transform = 'translate(-50%, -50%)';
             tourContent.style.right = 'auto';
-            tourContent.style.bottom = 'auto';
+            if (stepIndex === 0) {
+                // Step 1: bottom of screen
+                tourContent.style.top = 'auto';
+                tourContent.style.bottom = '20px';
+                tourContent.style.transform = 'translateX(-50%)';
+            } else {
+                // Steps 2-5: top of screen
+                tourContent.style.top = '20px';
+                tourContent.style.bottom = 'auto';
+                tourContent.style.transform = 'translateX(-50%)';
+            }
         }
     } else {
         tourSpotlight.style.display = 'none';
         tourContent.style.left = '50%';
-        tourContent.style.top = '50%';
-        tourContent.style.transform = 'translate(-50%, -50%)';
         tourContent.style.right = 'auto';
-        tourContent.style.bottom = 'auto';
+        if (stepIndex === 0) {
+            // Step 1: bottom of screen
+            tourContent.style.top = 'auto';
+            tourContent.style.bottom = '20px';
+            tourContent.style.transform = 'translateX(-50%)';
+        } else {
+            // Steps 2-5: top of screen
+            tourContent.style.top = '20px';
+            tourContent.style.bottom = 'auto';
+            tourContent.style.transform = 'translateX(-50%)';
+        }
     }
 }
 
