@@ -169,6 +169,18 @@ function mergeSd9Contests(contests) {
   return baseContest;
 }
 
+function setContestLabel(contest, label) {
+  if (!contest || !label) {
+    return contest;
+  }
+
+  const cloned = JSON.parse(JSON.stringify(contest));
+
+  cloned.label = label;
+
+  return cloned;
+}
+
 // Read both data files
 const alamedaData = readJsonFile(path.join(dataDir, 'alemeda-data.json'));
 const contraCostaData = readJsonFile(path.join(dataDir, 'contracosta-data.json'));
@@ -176,7 +188,15 @@ const contraCostaData = readJsonFile(path.join(dataDir, 'contracosta-data.json')
 const alamedaPrefix = 'alameda';
 const contraCostaPrefix = 'contracosta';
 
-const sd9Contests = [
+const alamedaSd9Contests = collectSd9Contests(alamedaData, alamedaPrefix).map((contest) =>
+  setContestLabel(contest, 'State Senate District 9 (Alameda)')
+);
+
+const contraCostaSd9Contests = collectSd9Contests(contraCostaData, contraCostaPrefix).map(
+  (contest) => setContestLabel(contest, 'State Senate District 9 (Contra Costa)')
+);
+
+const combinedSd9Contests = [
   ...collectSd9Contests(alamedaData, alamedaPrefix, { normalizeChoices: true }),
   ...collectSd9Contests(contraCostaData, contraCostaPrefix, {
     normalizeChoices: true,
@@ -184,10 +204,11 @@ const sd9Contests = [
   })
 ];
 
-const mergedSd9Contest = mergeSd9Contests(sd9Contests);
+const mergedSd9Contest = mergeSd9Contests(combinedSd9Contests);
+mergedSd9Contest.label = 'State Senate District 9';
 
 const combinedData = {
-  contests: [mergedSd9Contest]
+  contests: [mergedSd9Contest, ...alamedaSd9Contests, ...contraCostaSd9Contests]
 };
 
 // Write to new file
