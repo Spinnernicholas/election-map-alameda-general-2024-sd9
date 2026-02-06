@@ -69,7 +69,18 @@ L.Control.ElectionSelector = L.Control.extend({
     _addTitle: function(){
         let div = L.DomUtil.create('div', 'election-selector-credits', this._drawer);
 
-        div.innerHTML = `<p><b>${this._title}</b></p>`;
+        div.innerHTML = `<p><b>Map Controls</b></p>`;
+
+        // Add help button
+        let helpButton = L.DomUtil.create('button', 'election-selector-help-btn', div);
+        helpButton.textContent = 'Help & About';
+        L.DomEvent.on(helpButton, 'click', (e) => {
+            L.DomEvent.stopPropagation(e);
+            const introOverlay = document.getElementById('intro-overlay');
+            if (introOverlay) {
+                introOverlay.classList.remove('hidden');
+            }
+        }, this);
     },
 
     _addControls: function(){

@@ -47,6 +47,14 @@ body {
   text-align: center;
 }
 
+.election-selector-credits {
+  padding-bottom: 10px;
+}
+
+.election-selector-credits p {
+  margin: 10px 0 8px 0;
+}
+
 .election-selector-credits a {
   display: inline;
   text-decoration: underline;
@@ -55,6 +63,24 @@ body {
 .election-selector-slider{
   width: 90%;
   margin: 3px 5%;
+}
+
+.election-selector-help-btn {
+  display: block;
+  width: 90%;
+  margin: 0 5% 0 5%;
+  padding: 8px 12px;
+  background-color: #1f78b4;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background-color 0.2s;
+}
+
+.election-selector-help-btn:hover {
+  background-color: #1565a0;
 }
 
 p.popup-title{
