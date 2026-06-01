@@ -1,7 +1,7 @@
 # CocoaCountyMap
 This is an interactive election map with the goal of providing a template that can be used to quickly and easily create interactive election maps for any election.
 
-Try it out [Here](https://spinnernicholas.github.io/election-map-alameda-general-2024-sd9/public/)
+Try it out by deploying the `public/` directory to GitHub Pages for your repository.
 
 If you would like more informatino or a demo, please reach out to me on [LinkedIn](https://www.linkedin.com/in/spinnernicholas/).
 
@@ -19,7 +19,9 @@ If you would like more informatino or a demo, please reach out to me on [LinkedI
 File Specification can be found [HERE](dataSpecification.md)
 
 # External Election Data
-The app now reads election data from the Cocoa County election data repository index by default:
+The app reads election data from an external election repository index URL.
+
+Current default index URL:
 - `https://raw.githubusercontent.com/Cocoa-County/ElectionOpenDataRepository/main/elections.index.json`
 
 Selection behavior:
@@ -39,8 +41,4 @@ Built with [Leafletjs](https://leafletjs.com/)
 BaseMap provided by [OpenStreetMap](https://www.openstreetmap.org/)
 
 ## County Elections Departments
-[Alameda County Elections](https://www.acvote.org/)
-
-[Contra Costa County Elections](https://www.cocovote.us/)
-
-[Marin County Elections](https://www.marincounty.org/depts/rv)
+Add your relevant county election department links here for your deployment.

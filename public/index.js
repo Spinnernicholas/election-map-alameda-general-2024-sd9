@@ -45,7 +45,7 @@ const tourSteps = [
     },
     {
         title: 'Select a Contest',
-        description: 'Use this dropdown to switch between different views: combined results, Alameda only, or Contra Costa only.',
+        description: 'Use this dropdown to switch between available contests or datasets from your configured election index.',
         target: '.election-selector-select:first-of-type',
         position: 'right'
     },

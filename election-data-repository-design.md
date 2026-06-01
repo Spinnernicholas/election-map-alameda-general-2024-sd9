@@ -43,8 +43,8 @@ Previous county-first layout is fully supported.
 /legacy-example/
 /elections/
   /ca/
-    /contra-costa/
-      /2026-11-03-supervisor-d2/
+    /sample-county/
+      /2026-11-03-general/
         election.json
         precincts.gis.json
         metadata.json
@@ -99,7 +99,7 @@ Path resolution rules:
 ## App Integration Pattern
 
 This app now supports reading:
-- https://raw.githubusercontent.com/Cocoa-County/ElectionOpenDataRepository/main/elections.index.json
+- https://raw.githubusercontent.com/YOUR_ORG/YOUR_REPO/main/elections.index.json
 
 Behavior:
 - App loads an external index URL and selects defaultElectionId or first entry.
@@ -124,9 +124,9 @@ Behavior:
     {
       "id": "2026-11-03-general",
       "type": "general",
-      "label": "Contra Costa Mock - Supreme Snack Commissioner",
+      "label": "Sample County General Election Results",
       "date": "2026-11-03",
-      "county": "Contra Costa",
+      "county": "Sample County",
       "state": "CA",
       "dataUrl": "elections/2026-11-03-general/election.json",
       "precinctsUrl": "https://raw.githubusercontent.com/YOUR_ORG/another-repo/main/elections/2026-11-03-general/precincts.gis.json",
