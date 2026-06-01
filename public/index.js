@@ -1,10 +1,11 @@
-const pageTitle = 'Election Map Boilerplate';
-const precinctIDField = 'PrecinctID';
-const precinctLabelField = 'PrecinctNM';
-const grouped = false;
+let pageTitle = 'Election Map Boilerplate';
+let precinctIDField = 'PrecinctID';
+let precinctLabelField = 'PrecinctNM';
+let grouped = false;
 const additionalGISData = false;
-const electionDataFile = 'data/contracosta-mock-election.json';
-const precinctsFile = 'data/contracosta-precincts.gis.json';
+let electionDataFile = null;
+let precinctsFile = null;
+const electionsIndexFile = 'https://raw.githubusercontent.com/Cocoa-County/ElectionOpenDataRepository/main/elections.index.json';
 const defaultMapView = {
     center: [39.8283, -98.5795],
     zoom: 4
@@ -191,10 +192,39 @@ let data, precinctsLayer;
 
 (async () => {
     let addData;
+    let precincts;
 
-    data = await loadJson(electionDataFile);
-    if(additionalGISData) addData = await loadJson("data/add.gis.json");
-    let precincts = await loadJson(precinctsFile);
+    try {
+        const loadedIndex = await loadJsonWithSource(electionsIndexFile);
+        const electionsIndex = loadedIndex?.data || null;
+        const indexSourceUrl = loadedIndex?.sourceUrl || null;
+        const selectedElection = getSelectedElection(electionsIndex);
+
+        if(selectedElection) {
+            pageTitle = selectedElection.label || pageTitle;
+            precinctIDField = selectedElection.precinctIdField || precinctIDField;
+            precinctLabelField = selectedElection.precinctLabelField || precinctLabelField;
+            grouped = selectedElection.grouped ?? grouped;
+            electionDataFile = resolveIndexPath(selectedElection.dataUrl, indexSourceUrl);
+            precinctsFile = resolveIndexPath(selectedElection.precinctsUrl, indexSourceUrl);
+        }
+
+        if(!electionDataFile || !precinctsFile) {
+            throw new Error('Selected election is missing required data URLs.');
+        }
+
+        window.availableElections = Array.isArray(electionsIndex?.elections) ? electionsIndex.elections : [];
+
+        data = await loadJson(electionDataFile);
+        if(additionalGISData) addData = await loadJson("data/add.gis.json");
+        precincts = await loadJson(precinctsFile);
+    } catch (error) {
+        console.error('Election data load failed:', error);
+        window.availableElections = [];
+        data = { contests: [] };
+        precincts = { type: 'FeatureCollection', features: [] };
+    }
+
     let contests = Array.isArray(data?.contests) ? data.contests : [];
 
     precinctsLayer = L.geoJSON(precincts, {
@@ -321,6 +351,36 @@ let data, precinctsLayer;
 async function loadJson(file) {
     let response = await fetch(file);
     return await response.json();
+}
+
+async function loadJsonWithSource(file) {
+    let response = await fetch(file);
+    return {
+        data: await response.json(),
+        sourceUrl: response.url || new URL(file, window.location.href).toString()
+    };
+}
+
+function resolveIndexPath(pathOrUrl, indexSourceUrl) {
+    if(!pathOrUrl) return null;
+    if(!indexSourceUrl) return pathOrUrl;
+
+    try {
+        return new URL(pathOrUrl, indexSourceUrl).toString();
+    } catch {
+        return pathOrUrl;
+    }
+}
+
+function getSelectedElection(index) {
+    if(!index || !Array.isArray(index.elections) || !index.elections.length) return null;
+
+    if(index.defaultElectionId) {
+        let defaultElection = index.elections.find(e => e.id === index.defaultElectionId);
+        if(defaultElection) return defaultElection;
+    }
+
+    return index.elections[0];
 }
 
 function getBorderColor(input){

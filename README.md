@@ -18,13 +18,20 @@ If you would like more informatino or a demo, please reach out to me on [LinkedI
 # Data Specification
 File Specification can be found [HERE](dataSpecification.md)
 
-# Boilerplate Mock Data
-This branch includes a generated mock dataset for Contra Costa precinct geography:
-- `public/data/contracosta-mock-election.json`
+# External Election Data
+The app now reads election data from the Cocoa County election data repository index by default:
+- `https://raw.githubusercontent.com/Cocoa-County/ElectionOpenDataRepository/main/elections.index.json`
 
-If you want to run the map directly against `public/data/contracosta-precincts.gis.json`, update the field constants in `public/index.js` to use:
-- `PrecinctID` for precinct IDs
-- `PrecinctNM` for precinct labels
+Selection behavior:
+- `defaultElectionId` when present, or
+- the first item in the `elections` array as fallback.
+
+Index path behavior:
+- `dataUrl` and `precinctsUrl` can be relative paths for files in the same repository.
+- `dataUrl` and `precinctsUrl` can be full URLs for files hosted outside this repository.
+- No specific repository folder naming convention is required for compatibility.
+
+For a full GitHub-hosted data repository design, see `election-data-repository-design.md`.
 
 # Cedits
 Built with [Leafletjs](https://leafletjs.com/)
