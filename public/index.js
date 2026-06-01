@@ -201,7 +201,6 @@ let data, precinctsLayer;
         const selectedElection = getSelectedElection(electionsIndex);
 
         if(selectedElection) {
-            pageTitle = selectedElection.label || pageTitle;
             precinctIDField = selectedElection.precinctIdField || precinctIDField;
             precinctLabelField = selectedElection.precinctLabelField || precinctLabelField;
             grouped = selectedElection.grouped ?? grouped;
