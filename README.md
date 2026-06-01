@@ -18,6 +18,14 @@ If you would like more informatino or a demo, please reach out to me on [LinkedI
 # Data Specification
 File Specification can be found [HERE](dataSpecification.md)
 
+# Boilerplate Mock Data
+This branch includes a generated mock dataset for Contra Costa precinct geography:
+- `public/data/contracosta-mock-election.json`
+
+If you want to run the map directly against `public/data/contracosta-precincts.gis.json`, update the field constants in `public/index.js` to use:
+- `PrecinctID` for precinct IDs
+- `PrecinctNM` for precinct labels
+
 # Cedits
 Built with [Leafletjs](https://leafletjs.com/)
 

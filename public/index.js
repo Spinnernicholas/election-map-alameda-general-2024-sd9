@@ -1,8 +1,14 @@
-const pageTitle = 'Contra Costa County 2024 Presidential Election Results';
-const precinctIDField = 'Precinct_ID';
-const precinctLabelField = 'Precinct_ID';
+const pageTitle = 'Election Map Boilerplate';
+const precinctIDField = 'PrecinctID';
+const precinctLabelField = 'PrecinctNM';
 const grouped = false;
 const additionalGISData = false;
+const electionDataFile = 'data/contracosta-mock-election.json';
+const precinctsFile = 'data/contracosta-precincts.gis.json';
+const defaultMapView = {
+    center: [39.8283, -98.5795],
+    zoom: 4
+};
 
 // Intro overlay handler
 const introOverlay = document.getElementById('intro-overlay');
@@ -186,9 +192,10 @@ let data, precinctsLayer;
 (async () => {
     let addData;
 
-    data = await loadJson("data/data.json");
+    data = await loadJson(electionDataFile);
     if(additionalGISData) addData = await loadJson("data/add.gis.json");
-    let precincts = await loadJson("data/precincts.gis.json");
+    let precincts = await loadJson(precinctsFile);
+    let contests = Array.isArray(data?.contests) ? data.contests : [];
 
     precinctsLayer = L.geoJSON(precincts, {
         style: feature => {
@@ -205,7 +212,16 @@ let data, precinctsLayer;
             }
             layer.on({
                 click: e => {
-                    let contest = data.contests[window.selector.selection.contest];
+                    if(!window.selector || !contests.length) {
+                        let label = e.target.feature.properties[precinctLabelField] || 'Precinct';
+                        L.popup()
+                        .setLatLng(e.latlng)
+                        .setContent(`<p class="popup-title">${label}<br/></p>No election data loaded.`)
+                        .openOn(map);
+                        return;
+                    }
+
+                    let contest = contests[window.selector.selection.contest];
                     let choice = contest.choices[window.selector.selection.choice];
                     let precinct = contest.precincts[e.target.feature.properties[precinctIDField]];
 
@@ -291,9 +307,15 @@ let data, precinctsLayer;
         }
     }).addTo(map);
     
-    window.selector = L.control.ElectionSelector(pageTitle, precinctsLayer, data.contests, precinctIDField).addTo(map);
+    if(contests.length) {
+        window.selector = L.control.ElectionSelector(pageTitle, precinctsLayer, contests, precinctIDField).addTo(map);
+    }
 
-    map.fitBounds(precinctsLayer.getBounds());
+    if(precinctsLayer.getLayers().length) {
+        map.fitBounds(precinctsLayer.getBounds());
+    } else {
+        map.setView(defaultMapView.center, defaultMapView.zoom);
+    }
 })();
 
 async function loadJson(file) {
